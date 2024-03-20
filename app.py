@@ -96,14 +96,21 @@ def signal_handler(signal, frame):
     if cap is not None:
         cap.release()
 
-    socketio.emit('stop_exercise')  # Emit a custom event to stop the exercise
+    # Emit a custom event to stop the exercise
+    socketio.emit('stop_exercise')
 
     # Let the event be processed before stopping the server
     socketio.sleep(1)
 
+    # Get the Flask application instance from the SocketIO instance
+    app = socketio.server.app
+
+    # Stop the Flask application
     socketio.stop()
 
-signal.signal(signal.SIGINT, signal_handler)
+    # Stop the Flask development server
+    app.shutdown()
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, signal_handler)
     socketio.run(app, debug=True)
