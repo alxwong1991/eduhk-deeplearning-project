@@ -2,48 +2,54 @@ import cv2
 from mediapipe.python.solutions import pose as mp_pose
 from modules.bicep_curls import BicepCurls
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
+cap = None
+bicep_curls = None
+
 @app.route("/")
-def home():
-    return render_template('home.html')
+def index():
+    return render_template('index.html')
 
-@app.route("/bicep_curls")
-def bicep_curls():
-    cap = cv2.VideoCapture(1)
+@socketio.on('connect')
+def on_connect():
+    global cap, bicep_curls
 
-    # Curl counter variables
-    counter = 0
-    stage = None
+    if cap is None:
+        cap = cv2.VideoCapture(1)
 
     # Setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         # Create an instance of BicepCurls
-        bicep_curls = BicepCurls()
+        bicep_curls = BicepCurls(pose)
 
-        while cap.isOpened():
-            ret, frame = cap.read()
+@socketio.on('start_bicep_curls')
+def start_bicep_curls():
+    global cap, bicep_curls
 
-            # Check if frame was successfully captured
-            if not ret:
-                break
+    while cap.isOpened():
+        ret, frame = cap.read()
 
-            # Perform bicep curls exercise using the BicepCurls instance
-            image, angle = bicep_curls.perform_exercise(frame)
+        # Check if frame was successfully captured
+        if not ret:
+            break
 
-            # Check if image size is valid before displaying
-            if image is not None and image.shape[0] > 0 and image.shape[1] > 0:
-                cv2.imshow('Mediapipe Feed', image)
+        # Perform bicep curls exercise using the BicepCurls instance
+        image, angle = bicep_curls.perform_exercise(frame)
 
-            if cv2.waitKey(10) & 0xFF == ord('q'):
-                break
+        # Check if image size is valid before displaying
+        if image is not None and image.shape[0] > 0 and image.shape[1] > 0:
+            cv2.imshow('Mediapipe Feed', image)
 
-        cap.release()
-        cv2.destroyAllWindows()
-    return render_template('bicep_curls.html')
+        if cv2.waitKey(10) & 0xFF == ord('q'):
+            break
+
+    # Close the OpenCV window before releasing the camera
+    cv2.destroyAllWindows()
+    cap.release()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)

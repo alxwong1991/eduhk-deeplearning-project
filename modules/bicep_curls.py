@@ -4,10 +4,11 @@ from mediapipe.python.solutions import drawing_utils as mp_drawing
 from mediapipe.python.solutions import pose as mp_pose
 
 class BicepCurls:
-    def __init__(self):
+    def __init__(self, pose):
         # Curl counter variables
         self.counter = 0
         self.stage = None
+        self.pose = pose
         
         # Setup mediapipe instance
         self.pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
