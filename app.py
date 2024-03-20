@@ -36,9 +36,6 @@ def on_connect():
 def start_bicep_curls():
     global cap, bicep_curls
 
-    if cap is None:
-        cap = cv2.VideoCapture(1)
-
     # Setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         # Create an instance of BicepCurls
@@ -68,9 +65,6 @@ def start_bicep_curls():
 def start_squats():
     global cap, squats
 
-    # if cap is None:
-    #     cap = cv2.VideoCapture(1)
-
     # Setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         # Create an instance of Squats
@@ -96,7 +90,7 @@ def start_squats():
     # Close the OpenCV window before releasing the camera
     cv2.destroyAllWindows()
 
-def signal_handler():
+def signal_handler(signal, frame):
     global cap
 
     if cap is not None:
@@ -108,6 +102,8 @@ def signal_handler():
     socketio.sleep(1)
 
     socketio.stop()
+
+signal.signal(signal.SIGINT, signal_handler)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
