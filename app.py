@@ -38,11 +38,11 @@ def start_bicep_curls():
             break
 
         # Perform bicep curls exercise using the BicepCurls instance
-        image, angle = bicep_curls.perform_exercise(frame)
+        frame, angle = bicep_curls.perform_exercise(frame)
 
         # Check if image size is valid before displaying
-        if image is not None and image.shape[0] > 0 and image.shape[1] > 0:
-            cv2.imshow('Mediapipe Feed', image)
+        if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
+            cv2.imshow('Mediapipe Feed', frame)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
