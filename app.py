@@ -1,6 +1,8 @@
 import cv2
+import signal
 from mediapipe.python.solutions import pose as mp_pose
 from modules.bicep_curls import BicepCurls
+from modules.squats import Squats
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 
@@ -9,6 +11,7 @@ socketio = SocketIO(app)
 
 cap = None
 bicep_curls = None
+squats = None
 
 @app.route("/")
 def index():
@@ -16,7 +19,7 @@ def index():
 
 @socketio.on('connect')
 def on_connect():
-    global cap, bicep_curls
+    global cap, bicep_curls, squats
 
     if cap is None:
         cap = cv2.VideoCapture(1)
@@ -26,9 +29,20 @@ def on_connect():
         # Create an instance of BicepCurls
         bicep_curls = BicepCurls(pose)
 
+        # Create an instance of Squats
+        squats = Squats(pose)
+
 @socketio.on('start_bicep_curls')
 def start_bicep_curls():
     global cap, bicep_curls
+
+    if cap is None:
+        cap = cv2.VideoCapture(1)
+
+    # Setup mediapipe instance
+    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+        # Create an instance of BicepCurls
+        bicep_curls = BicepCurls(pose)
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -42,39 +56,58 @@ def start_bicep_curls():
 
         # Check if image size is valid before displaying
         if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
-            cv2.imshow('Mediapipe Feed', frame)
+            cv2.imshow('Mediapipe Feed Bicep Curls', frame)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
     # Close the OpenCV window before releasing the camera
-    cap.release()
     cv2.destroyAllWindows()
 
-# @socketio.on('start_squats')
-# def start_squats():
-#     global cap, squats
+@socketio.on('start_squats')
+def start_squats():
+    global cap, squats
 
-#     while cap.isOpened():
-#         ret, frame = cap.read()
+    # if cap is None:
+    #     cap = cv2.VideoCapture(1)
 
-#         # Check if frame was successfully captured
-#         if not ret:
-#             break
+    # Setup mediapipe instance
+    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+        # Create an instance of Squats
+        squats = Squats(pose)
 
-#         # Perform squats exercise using the Squats instance
-#         frame, angle = squats.perform_exercise(frame)
+    while cap.isOpened():
+        ret, frame = cap.read()
 
-#         # Check if image size is valid before displaying
-#         if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
-#             cv2.imshow('Mediapipe Feed', frame)
+        # Check if frame was successfully captured
+        if not ret:
+            break
 
-#         if cv2.waitKey(10) & 0xFF == ord('q'):
-#             break
+        # Perform squats exercise using the Squats instance
+        frame, angle = squats.perform_exercise(frame)
 
-#     # Close the OpenCV window before releasing the camera
-#     cap.release()
-#     cv2.destroyAllWindows()
+        # Check if image size is valid before displaying
+        if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
+            cv2.imshow('Mediapipe Feed Squats', frame)
+
+        if cv2.waitKey(10) & 0xFF == ord('q'):
+            break
+
+    # Close the OpenCV window before releasing the camera
+    cv2.destroyAllWindows()
+
+def signal_handler():
+    global cap
+
+    if cap is not None:
+        cap.release()
+
+    socketio.emit('stop_exercise')  # Emit a custom event to stop the exercise
+
+    # Let the event be processed before stopping the server
+    socketio.sleep(1)
+
+    socketio.stop()
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
