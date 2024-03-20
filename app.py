@@ -48,8 +48,33 @@ def start_bicep_curls():
             break
 
     # Close the OpenCV window before releasing the camera
-    cv2.destroyAllWindows()
     cap.release()
+    cv2.destroyAllWindows()
+
+# @socketio.on('start_squats')
+# def start_squats():
+#     global cap, squats
+
+#     while cap.isOpened():
+#         ret, frame = cap.read()
+
+#         # Check if frame was successfully captured
+#         if not ret:
+#             break
+
+#         # Perform squats exercise using the Squats instance
+#         frame, angle = squats.perform_exercise(frame)
+
+#         # Check if image size is valid before displaying
+#         if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
+#             cv2.imshow('Mediapipe Feed', frame)
+
+#         if cv2.waitKey(10) & 0xFF == ord('q'):
+#             break
+
+#     # Close the OpenCV window before releasing the camera
+#     cap.release()
+#     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

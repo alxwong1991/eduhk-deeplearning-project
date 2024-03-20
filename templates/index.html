@@ -10,7 +10,7 @@
     <h1>Virtual PE Trainer: Interactive Pose Detection for Physical Education</h1>
     
     <button id="start-btn-bicep-curls" onclick="startBicepCurls()">Start Bicep Curls</button>
-    
+    <button id="start-btn-squats" onclick="startSquats()">Start Squats</button>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
     <script src="../static/script.js"></script>
@@ -19,6 +19,10 @@
 
         function startBicepCurls() {
             socket.emit('start_bicep_curls');
+        }
+
+        function startSquats() {
+            socket.emit('start_squats');
         }
     </script>
 </body>
