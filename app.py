@@ -17,24 +17,12 @@ squats = None
 def index():
     return render_template('index.html')
 
-@socketio.on('connect')
-def on_connect():
-    global cap, bicep_curls, squats
-
-    if cap is None:
-        cap = cv2.VideoCapture(1)
-
-    # Setup mediapipe instance
-    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
-        # Create an instance of BicepCurls
-        bicep_curls = BicepCurls(pose)
-
-        # Create an instance of Squats
-        squats = Squats(pose)
-
 @socketio.on('start_bicep_curls')
 def start_bicep_curls():
     global cap, bicep_curls
+
+    if cap is None:
+        cap = cv2.VideoCapture(1)
 
     # Setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -65,6 +53,9 @@ def start_bicep_curls():
 def start_squats():
     global cap, squats
 
+    if cap is None:
+        cap = cv2.VideoCapture(1)
+
     # Setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         # Create an instance of Squats
@@ -78,7 +69,7 @@ def start_squats():
             break
 
         # Perform squats exercise using the Squats instance
-        frame, angle = squats.perform_exercise(frame)
+        angle, frame = squats.perform_exercise(frame)
 
         # Check if image size is valid before displaying
         if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:

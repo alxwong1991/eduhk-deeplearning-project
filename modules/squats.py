@@ -5,7 +5,6 @@ from mediapipe.python.solutions import pose as mp_pose
 
 class Squats:
     def __init__(self, pose):
-        # Squat counter variables
         self.counter = 0
         self.stage = None
         self.pose = pose
@@ -14,16 +13,16 @@ class Squats:
         self.pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
     def calculate_angle(self, a, b, c):
-        a = np.array(a)  # First
-        b = np.array(b)  # Mid
-        c = np.array(c)  # End
-
+        # Calculate the angle between three points using numpy
+        a = np.array(a)
+        b = np.array(b)
+        c = np.array(c)
+        
         radians = np.arctan2(c[1] - b[1], c[0] - b[0]) - np.arctan2(a[1] - b[1], a[0] - b[0])
         angle = np.abs(radians * 180.0 / np.pi)
-
+        
         if angle > 180.0:
             angle = 360 - angle
-
         return angle
 
     def detect(self, frame):
@@ -39,16 +38,17 @@ class Squats:
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
         return image, results.pose_landmarks
-
+    
     def update(self, angle):
-        # Squat counter logic
-        if angle > 160:
-            self.stage = "down"
-        if angle < 30 and self.stage == "down":
+        # Update squat counter based on the angle
+        if 70 < angle < 160:
+            if self.stage == "down":
+                self.counter += 1
             self.stage = "up"
-            self.counter += 1
+        elif 190 < angle < 280:
+            self.stage = "down"
             print(self.counter)
-
+            
         return self.counter
 
     def render_counter(self, frame):
@@ -62,39 +62,52 @@ class Squats:
         # Stage data
         cv2.putText(frame, "STAGE", (105, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
         cv2.putText(frame, self.stage, (110, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2, cv2.LINE_AA)
-
+        
         return frame
 
     def perform_exercise(self, frame):
-        # Perform squats exercise
+        # Perform squat exercise
         image, landmarks = self.detect(frame)
-        
+
         if landmarks is not None:
-            left_hip = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP].x, landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP].y]
-            left_knee = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_KNEE].x, landmarks.landmark[mp_pose.PoseLandmark.LEFT_KNEE].y]
-            left_ankle = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_ANKLE].x, landmarks.landmark[mp_pose.PoseLandmark.LEFT_ANKLE].y]
+            shoulder = [landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
+                        landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            hip = [landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP.value].x,
+                landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+            knee = [landmarks.landmark[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
+                    landmarks.landmark[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
+            ankle = [landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
+                    landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
 
-            # Calculate angle
-            angle = self.calculate_angle(left_hip, left_knee, left_ankle)
+            # Calculate knee angle
+            angle_knee = self.calculate_angle(hip, knee, ankle)
+            knee_angle = 180 - angle_knee
 
-            # Update exercise counter
-            self.counter = self.update(angle)
+            # Calculate hip angle
+            angle_hip = self.calculate_angle(shoulder, hip, knee)
+            hip_angle = 180 - angle_hip
 
-            # Render counter on the frame
+            self.counter = self.update(angle_knee)
+            
             image = self.render_counter(frame)
 
-            # Draw landmarks and connections on the frame
+            # Render the counter and landmarks on the frame
             mp_drawing.draw_landmarks(
                 image, landmarks, mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=mp_drawing.DrawingSpec(color=(245, 117, 66), thickness=2, circle_radius=2),
                 connection_drawing_spec=mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2)
             )
-            
-            # Visualize angle
-            knee_coords = tuple(np.multiply(left_knee, [frame.shape[1], frame.shape[0]]).astype(int))
-            cv2.putText(image, str(angle), knee_coords, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-        else:
-            angle = 0
 
-        # Return the modified image and angle
-        return image, angle
+            # Visualize knee angle
+            knee_coords = tuple(np.multiply(knee, [frame.shape[1], frame.shape[0]]).astype(int))
+            cv2.putText(image, str(angle_knee), knee_coords, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+
+            # # Visualize hip angle
+            hip_coords = tuple(np.multiply(hip, [frame.shape[1], frame.shape[0]]).astype(int))
+            cv2.putText(image, str(angle_hip), hip_coords, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+
+        else:
+            knee_angle = 0
+            hip_angle = 0
+
+        return image, knee_angle, hip_angle

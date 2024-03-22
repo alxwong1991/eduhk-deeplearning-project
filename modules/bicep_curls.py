@@ -70,9 +70,12 @@ class BicepCurls:
         image, landmarks = self.detect(frame)
         
         if landmarks is not None:
-            shoulder = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER].x, landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER].y]
-            elbow = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW].x, landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW].y]
-            wrist = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST].x, landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST].y]
+            shoulder = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER].x, 
+                        landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER].y]
+            elbow = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW].x, 
+                     landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW].y]
+            wrist = [landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST].x, 
+                     landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST].y]
 
             # Calculate angle
             angle = self.calculate_angle(shoulder, elbow, wrist)
