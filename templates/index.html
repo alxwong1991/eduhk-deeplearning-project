@@ -3,27 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Virtual PE Coach: Bicep Curl Pose Detection</title>
     <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/leaderboard.css">
 </head>
 <body>
-    <h1>Virtual PE Trainer: Interactive Pose Detection for Physical Education</h1>
-    
-    <button id="start-btn-bicep-curls" onclick="startBicepCurls()">Start Bicep Curls</button>
-    <button id="start-btn-squats" onclick="startSquats()">Start Squats</button>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <div class="background-video">
+        <video src="../static/assets/video.mp4" autoplay loop muted></video>
+    </div>
+    <h1>Virtual PE Coach: Bicep Curl Pose Detection</h1>
+    <div class="container">
+        <div class="name-container">
+            <input type="text" class="name-input" placeholder="Enter your name">
+            <button class="save-name-button">Save Name</button>
+        </div>
+        <div class="exercise-buttons">
+            <button class="start-curls-button">Start Bicep Curls</button>
+        </div>
+        <div class="counter-container">
+            <p class="name-placeholder"></p>
+            <p class="feedback-placeholder"></p>
+            <button class="save-data-button">Save Data</button>
+        </div>
+        <div class="leaderboard-button-container">
+            <button class="leaderboard-button">View Leaderboard</button>
+        </div>
+    </div>
+    <div class="leaderboard-modal modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Leaderboard</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Reps</th>
+                    </tr>
+                </thead>
+                <tbody class="leaderboard-body"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
     <script src="../static/script.js"></script>
-    <script>
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
-
-        function startBicepCurls() {
-            socket.emit('start_bicep_curls');
-        }
-
-        function startSquats() {
-            socket.emit('start_squats');
-        }
-    </script>
+    <script src="../static/leaderboard.js"></script>
 </body>
 </html>

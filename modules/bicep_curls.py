@@ -100,4 +100,4 @@ class BicepCurls:
             angle = 0
 
         # Return the modified image and angle
-        return image, angle
+        return image, angle, self.counter
