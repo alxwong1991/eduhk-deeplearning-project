@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     var feedbackPlaceholder = document.querySelector(".feedback-placeholder");
     var exerciseButtonsContainer = document.querySelector(".exercise-buttons");
     var saveDataButton = document.querySelector(".save-data-button");
+    var counterDisplay = document.querySelector("counter-display");
+    var resultContainer = document.getElementById("result-container");
 
     saveNameButton.addEventListener("click", saveName);
     startCurlsButton.addEventListener("click", startBicepCurls);
@@ -37,13 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateCounter(counter) {
-        var counterDisplay = document.querySelector("counter-display");
         counterDisplay.innerHTML = counter;
     }
 
     function showCompleteMessage(counter) {
-        var counterContainer = document.querySelector("counter-container");
-        counterContainer.style.display = "block";
+        resultContainer.style.display = "block";
 
         var feedbackMessage = "";
 
@@ -60,11 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         namePlaceholder.innerText = completeMessage;
         feedbackPlaceholder.innerText = feedbackMessage;
 
-        saveDataButton.style.display = "block";
         hideButton(startCurlsButton);
-
-        // Show counter-container items
-        document.querySelector(".counter-container").style.display = "block";
     }
 
     function hideButton(button) {

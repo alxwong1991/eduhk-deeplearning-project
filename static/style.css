@@ -30,7 +30,7 @@
     display: none;
 }
 
-.counter-container {
+#result-container {
     text-align: center;
     display: none;
 }
