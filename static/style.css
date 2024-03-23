@@ -103,3 +103,42 @@ body {
     width: 100%;
     height: 100%;
 }
+
+.name-placeholder {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.result-image {
+    width: 90vh;
+    height: 70vh;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+.feedback-placeholder {
+    font-size: 26px;
+    font-style: italic;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.save-data-button {
+    display: block; /* Change display to block */
+    margin: 0 auto; /* Center align horizontally */
+    padding: 8px 20px;
+    background-color: #337ab7;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px; /* Add margin-top to create space */
+}
+
+.save-data-button:hover {
+    background-color: #286090;
+}

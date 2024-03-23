@@ -1,5 +1,5 @@
 import cv2
-from peewee import *
+# from peewee import *
 # from models.leaderboard import Leaderboard
 from mediapipe.python.solutions import pose as mp_pose
 from modules.bicep_curls import BicepCurls
@@ -13,7 +13,7 @@ cap = None
 bicep_curls = None
 
 # Connect to the database
-db = SqliteDatabase('user_data.db')
+# db = SqliteDatabase('user_data.db')
 
 @app.route("/")
 def index():

@@ -3,15 +3,15 @@ document.addEventListener("DOMContentLoaded", function () {
     var saveNameButton = document.querySelector(".save-name-button");
     var startCurlsButton = document.querySelector(".start-curls-button");
     var namePlaceholder = document.querySelector(".name-placeholder");
-    var feedbackPlaceholder = document.querySelector(".feedback-placeholder");
+    // var feedbackPlaceholder = document.querySelector(".feedback-placeholder");
     var exerciseButtonsContainer = document.querySelector(".exercise-buttons");
-    var saveDataButton = document.querySelector(".save-data-button");
+    // var saveDataButton = document.querySelector(".save-data-button");
     var counterDisplay = document.querySelector("counter-display");
     var resultContainer = document.getElementById("result-container");
 
     saveNameButton.addEventListener("click", saveName);
     startCurlsButton.addEventListener("click", startBicepCurls);
-    saveDataButton.addEventListener("click", saveData);
+    // saveDataButton.addEventListener("click", saveData);
 
     socket.on("update_counter", updateCounter);
     socket.on("exercise_finished", showCompleteMessage);
@@ -46,19 +46,39 @@ document.addEventListener("DOMContentLoaded", function () {
         resultContainer.style.display = "block";
 
         var feedbackMessage = "";
+        var feedbackImage = "";
 
         if (counter < 10) {
-            feedbackMessage = "You need to train more.";
+            feedbackMessage = "You need to train more weaksauce.";
+            feedbackImage = "weak.jpg";
         } else if (counter >= 10 && counter < 20) {
             feedbackMessage = "You're not too bad.";
+            feedbackImage = "not_bad.jpg";
         } else if (counter >= 20 && counter < 30) {
             feedbackMessage = "You're strong!";
+            feedbackImage = "strong.jpg";
+        } else if (counter >= 30) {
+            feedbackMessage = "You're a GTL!";
+            feedbackImage = "gtl.jpg";
         }
 
-        var completeMessage =
-            namePlaceholder.innerText + " did " + counter + " REPS";
+        var completeMessage = namePlaceholder.innerText + " did " + counter + " REPS!";
         namePlaceholder.innerText = completeMessage;
-        feedbackPlaceholder.innerText = feedbackMessage;
+
+        var feedbackElement = document.createElement("p");
+        feedbackElement.classList.add("feedback-placeholder");
+        feedbackElement.innerText = feedbackMessage;
+        resultContainer.insertBefore(feedbackElement, imageElement);
+    
+        var imageElement = document.createElement("img");
+        imageElement.src = "../static/assets/" + feedbackImage;
+        imageElement.classList.add("result-image");
+        resultContainer.appendChild(imageElement);
+
+        var saveDataButton = document.createElement("button");
+        saveDataButton.classList.add("save-data-button");
+        saveDataButton.innerText = "Save Data";
+        resultContainer.appendChild(saveDataButton);
 
         hideButton(startCurlsButton);
     }
@@ -67,15 +87,15 @@ document.addEventListener("DOMContentLoaded", function () {
         button.style.display = "none";
     }
 
-    function saveData() {
-        var name = namePlaceholder.innerText;
-        var reps = document.getElementById("counter-display").innerText;
+    // function saveData() {
+    //     var name = namePlaceholder.innerText;
+    //     var reps = document.getElementById("counter-display").innerText;
 
-        var data = {
-            name: name,
-            reps: reps,
-        };
+    //     var data = {
+    //         name: name,
+    //         reps: reps,
+    //     };
 
-        socket.emit("save_data", data);
-    }
+    //     socket.emit("save_data", data);
+    // }
 });
