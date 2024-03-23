@@ -1,19 +1,13 @@
 import cv2
-# from peewee import *
-# from models.leaderboard import Leaderboard
-from mediapipe.python.solutions import pose as mp_pose
-from modules.bicep_curls import BicepCurls
 from flask import Flask, render_template
 from flask_socketio import SocketIO
+from modules.camera import Camera
+from modules.exercise import Exercise
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-
-cap = None
-bicep_curls = None
-
-# Connect to the database
-# db = SqliteDatabase('user_data.db')
+camera = Camera()
+exercise = Exercise()
 
 @app.route("/")
 def index():
@@ -21,34 +15,20 @@ def index():
 
 @socketio.on('start_bicep_curls')
 def start_bicep_curls():
-    global cap, bicep_curls
-
-    if cap is None:
-        cap = cv2.VideoCapture(1)
-
-    # Setup mediapipe instance
-    with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
-        # Create an instance of BicepCurls
-        bicep_curls = BicepCurls(pose)
+    camera.start_capture()
+    exercise.setup_bicep_curls()
 
     counter = 0  # Reset the counter before starting the exercise
 
-    # Connect to the database
-    # db.connect()
-    # db.create_tables([Leaderboard])
-
-    # Create a new leaderboard record in the database
-    # leaderboard = Leaderboard.create(name='Bicep Curls', reps=0, counter=counter)
-
-    while cap.isOpened():
-        ret, frame = cap.read()
+    while camera.cap.isOpened():
+        ret, frame = camera.read_frame()
 
         # Check if frame was successfully captured
         if not ret:
             break
 
-        # Perform bicep curls exercise using the BicepCurls instance
-        frame, angle, counter = bicep_curls.perform_exercise(frame)
+        # Perform bicep curls exercise using the Exercise instance
+        frame, angle, counter = exercise.perform_bicep_curls(frame)
 
         # Check if image size is valid before displaying
         if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
@@ -64,8 +44,7 @@ def start_bicep_curls():
     cv2.destroyAllWindows()
 
     # Release the camera capture
-    if cap is not None:
-        cap.release()
+    camera.release_capture()
 
     # Emit the final counter value after the exercise ends
     socketio.emit('exercise_finished', counter)

@@ -1,3 +1,4 @@
+/* General Styles */
 * {
     margin: 0;
     padding: 0;
@@ -5,12 +6,21 @@
     box-sizing: border-box;
 }
 
-.leaderboard-button-container {
-    position: fixed;
-    top: 10px;
-    right: 10px;
+body {
+    color: #fff;
 }
 
+/* Heading Styles */
+h1 {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Button Styles */
 .button {
     padding: 8px 20px;
     background-color: #337ab7;
@@ -25,6 +35,12 @@
     background-color: #286090;
 }
 
+/* Container Styles */
+.name-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .exercise-buttons {
     text-align: center;
     display: none;
@@ -35,24 +51,7 @@
     display: none;
 }
 
-h1 {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-body {
-    color: #fff;
-}
-
-.name-container {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
+/* Input Styles */
 .name-input {
     padding: 8px;
     font-size: 16px;
@@ -61,16 +60,10 @@ body {
     margin-right: 10px;
 }
 
+/* Specific Button Styles */
 .save-name-button,
-.start-curls-button,
-.save-data-button {
+.start-curls-button {
     margin-top: 10px;
-}
-
-.save-name-button,
-.start-curls-button,
-.save-data-button,
-.leaderboard-button {
     padding: 8px 20px;
     background-color: #337ab7;
     color: #fff;
@@ -81,12 +74,11 @@ body {
 }
 
 .save-name-button:hover,
-.start-curls-button:hover,
-.save-data-button:hover,
-.leaderboard-button:hover {
+.start-curls-button:hover {
     background-color: #286090;
 }
 
+/* Background Video Styles */
 .background-video {
     position: fixed;
     top: 0;
@@ -104,6 +96,7 @@ body {
     height: 100%;
 }
 
+/* Placeholder Styles */
 .name-placeholder {
     font-size: 24px;
     font-weight: bold;
@@ -112,33 +105,20 @@ body {
     letter-spacing: 2px;
 }
 
+/* Result Image Styles */
 .result-image {
-    width: 90vh;
+    width: 100vh;
     height: 70vh;
     object-fit: cover;
     margin-bottom: 10px;
-  }
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
 
+/* Feedback Styles */
 .feedback-placeholder {
     font-size: 26px;
     font-style: italic;
     color: #fff;
     margin-bottom: 20px;
-}
-
-.save-data-button {
-    display: block; /* Change display to block */
-    margin: 0 auto; /* Center align horizontally */
-    padding: 8px 20px;
-    background-color: #337ab7;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px; /* Add margin-top to create space */
-}
-
-.save-data-button:hover {
-    background-color: #286090;
 }
