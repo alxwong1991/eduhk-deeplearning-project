@@ -11,13 +11,14 @@ body {
 }
 
 /* Heading Styles */
-h1 {
+.title {
     text-align: center;
     margin-top: 40px;
     margin-bottom: 20px;
-    font-size: 28px;
+    font-size: 36px;
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
 }
 
 /* Button Styles */
