@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 from mediapipe.python.solutions import drawing_utils as mp_drawing
 from mediapipe.python.solutions import pose as mp_pose
+from modules.countdown_timer import CountdownTimer
+from modules.ui_renderer import UIRenderer
 
 class BicepCurls:
     def __init__(self, pose):
@@ -12,6 +14,13 @@ class BicepCurls:
         
         # Setup mediapipe instance
         self.pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+
+        # Countdown timer variables
+        self.timer = 30
+        self.timer_instance = CountdownTimer(self.timer)
+        
+        # UI Renderer instance
+        self.ui_renderer = UIRenderer()
 
     def calculate_angle(self, a, b, c):
         a = np.array(a)  # First
@@ -51,20 +60,6 @@ class BicepCurls:
 
         return self.counter
 
-    def render_counter(self, frame):
-        # Setup status box
-        cv2.rectangle(frame, (0, 0), (290, 73), (245, 117, 16), -1)
-
-        # Rep data
-        cv2.putText(frame, "REPS", (15, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
-        cv2.putText(frame, str(self.counter), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2, cv2.LINE_AA)
-
-        # Stage data
-        cv2.putText(frame, "STAGE", (105, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
-        cv2.putText(frame, self.stage, (110, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2, cv2.LINE_AA)
-
-        return frame
-
     def perform_exercise(self, frame):
         # Perform bicep curls exercise
         image, landmarks = self.detect(frame)
@@ -83,8 +78,11 @@ class BicepCurls:
             # Update exercise counter
             self.counter = self.update(angle)
 
-            # Render counter on the frame
-            image = self.render_counter(frame)
+            # Get remaining time
+            remaining_time = self.timer_instance.get_remaining_time()
+
+            # Render counter and stage on the frame
+            image = self.ui_renderer.render_status_box(image, self.counter, self.stage, remaining_time)
 
             # Draw landmarks and connections on the frame
             mp_drawing.draw_landmarks(

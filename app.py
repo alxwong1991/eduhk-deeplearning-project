@@ -1,4 +1,5 @@
 import cv2
+import time
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 from modules.camera import Camera
@@ -20,6 +21,14 @@ def start_bicep_curls():
 
     counter = 0  # Reset the counter before starting the exercise
 
+    # Emit the countdown values to the client
+    countdown_duration = 5
+    for countdown in range(countdown_duration, 0, -1):
+        socketio.emit('display_countdown', countdown)
+        time.sleep(1)  # Wait for 1 second before the next countdown
+
+    exercise.bicep_curls.timer_instance.start()
+
     while camera.cap.isOpened():
         ret, frame = camera.read_frame()
 
@@ -37,6 +46,20 @@ def start_bicep_curls():
         # Emit the counter value to the client
         socketio.emit('update_counter', counter)
 
+        remaining_time = exercise.bicep_curls.timer_instance.get_remaining_time()
+        if remaining_time <= 0:
+            # Emit an event to the client indicating the exercise is finished
+            socketio.emit('exercise_finished', counter)
+
+            # Emit an event to display Swal.fire alert in the frontend
+            socketio.emit('display_alert', {
+                'title': 'Exercise Finished',
+                'text': 'You have completed the exercise!',
+                'icon': 'success'
+            })
+
+            break
+
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
@@ -45,9 +68,6 @@ def start_bicep_curls():
 
     # Release the camera capture
     camera.release_capture()
-
-    # Emit the final counter value after the exercise ends
-    socketio.emit('exercise_finished', counter)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
