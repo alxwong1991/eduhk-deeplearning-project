@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // DOM elements
     var saveNameButton = document.querySelector(".save-name-button");
-    // var startCurlsButton = document.querySelector(".start-curls-button");
-    // var namePlaceholder = document.querySelector(".name-placeholder");
     var exerciseButtonsContainer = document.querySelector(".exercise-buttons");
 
     // Event listeners

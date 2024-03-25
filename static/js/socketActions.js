@@ -20,7 +20,6 @@ function displayCountdown(countdown) {
         text: "The exercise will start in " + countdown + " seconds.",
         icon: "info",
         timer: countdown * 1000,
-        timerProgressBar: true,
         showConfirmButton: false,
         onBeforeOpen: () => {
             Swal.showLoading();
@@ -38,7 +37,7 @@ function showCompleteMessage(counter) {
 
     var feedback = getFeedback(counter);
     var completeMessage =
-        namePlaceholder.innerText + " did " + counter + " REPS!";
+        namePlaceholder.innerText + " did " + counter + " reps!";
     namePlaceholder.innerText = completeMessage;
 
     var feedbackElement = createFeedbackElement(feedback.message);

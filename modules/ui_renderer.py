@@ -6,7 +6,7 @@ class UIRenderer:
 
     def render_status_box(self, frame, counter, stage, remaining_time):
         # Setup status box
-        cv2.rectangle(frame, (0, 0), (450, 73), (245, 117, 16), -1)
+        cv2.rectangle(frame, (0, 0), (430, 73), (245, 117, 16), -1)
 
         # Rep data
         cv2.putText(frame, "REPS", (15, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
@@ -19,11 +19,11 @@ class UIRenderer:
         # Timer data
         if remaining_time <= 5:
             # Change color to red
-            cv2.putText(frame, "TIME", (305, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+            cv2.putText(frame, "TIME", (300, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             cv2.putText(frame, f"{remaining_time}s", (310, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2, cv2.LINE_AA)
         else:
             # Default color
-            cv2.putText(frame, "TIME", (305, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+            cv2.putText(frame, "TIME", (295, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
             cv2.putText(frame, f"{remaining_time}s", (310, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2, cv2.LINE_AA)
 
         return frame
