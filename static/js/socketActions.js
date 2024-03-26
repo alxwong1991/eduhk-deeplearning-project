@@ -51,26 +51,27 @@ function showCompleteMessage(counter) {
 
 // Get feedback based on counter
 function getFeedback(counter) {
-    if (counter < 10) {
-        return {
-            message: "You need to train more weaksauce.",
-            image: "weak.jpg",
-        };
-    } else if (counter < 20) {
-        return {
-            message: "You're not too bad.",
-            image: "not_bad.jpg",
-        };
-    } else if (counter < 30) {
-        return {
-            message: "You're strong!",
-            image: "strong.jpg",
-        };
-    } else {
-        return {
-            message: "You're a GTL!",
-            image: "gtl.jpg",
-        };
+    switch (true) {
+        case counter < 10:
+            return {
+                message: "You need to train more weaksauce.",
+                image: "weak.jpg",
+            };
+        case counter < 20:
+            return {
+                message: "You're not too bad.",
+                image: "not_bad.jpg",
+            };
+        case counter < 30:
+            return {
+                message: "You're strong!",
+                image: "strong.jpg",
+            };
+        default:
+            return {
+                message: "You're a GTL!",
+                image: "gtl.jpg",
+            };
     }
 }
 
