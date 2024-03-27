@@ -81,7 +81,7 @@ class BicepCurls:
             # Get remaining time
             remaining_time = self.timer_instance.get_remaining_time()
 
-            # Render counter and stage on the frame
+            # Render counter, stage and countdown timer on the frame
             image = self.ui_renderer.render_status_box(image, self.counter, self.stage, remaining_time)
 
             # Draw landmarks and connections on the frame
