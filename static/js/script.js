@@ -13,22 +13,21 @@ document.addEventListener("DOMContentLoaded", function () {
         var name = nameInput.value.trim();
 
         if (name === "") {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Please enter your name.",
-            });
+            showErrorAlert("Please enter your name.");
+            return;
+        }
+    
+        if (/\s/.test(name)) {
+            showErrorAlert("Name cannot contain spaces.");
+            return;
+        }
+    
+        if (!/^[a-zA-Z]+$/.test(name)) {
+            showErrorAlert("Name can only contain alphabetic characters.");
             return;
         }
 
-        if (!/^[a-zA-Z]+$/.test(name)) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Name can only contain alphabetic characters.",
-            });
-            return;
-        }
+        showSuccessAlert("Name has been successfully saved!")
 
         socket.emit("save_name", name);
 
@@ -37,6 +36,22 @@ document.addEventListener("DOMContentLoaded", function () {
         exerciseButtonsContainer.style.display = "block";
 
         namePlaceholder.innerText = name;
+    }
+
+    function showErrorAlert(message) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: message,
+        });
+    }
+
+    function showSuccessAlert(message) {
+        Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: message
+        })
     }
 
     // Start bicep curls function
