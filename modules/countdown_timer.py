@@ -17,6 +17,3 @@ class CountdownTimer:
         elapsed_time = time.time() - self.start_time
         remaining_time = max(0, self.duration - elapsed_time)
         return round(remaining_time)
-    
-    def timer_expired(self):
-        return self.get_remaining_time() <= 0

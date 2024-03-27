@@ -4,7 +4,6 @@ from modules.bicep_curls import BicepCurls
 class Exercise:
     def __init__(self):
         self.bicep_curls = None
-        self.timer_expired = False
 
     def setup_bicep_curls(self):
         with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
