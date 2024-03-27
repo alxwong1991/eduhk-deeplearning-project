@@ -21,6 +21,7 @@ function displayCountdown(countdown) {
         icon: "info",
         timer: countdown * 1000,
         showConfirmButton: false,
+        allowOutsideClick: false,
         onBeforeOpen: () => {
             Swal.showLoading();
         }
